@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, jsonify
 import openai
 
-openai.api_key = "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"
+openai.api_key = ""
 
 app = Flask(__name__)
 
