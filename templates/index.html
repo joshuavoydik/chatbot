@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joshua's Chatbot</title>
+    <style>
+
+        html, body {
+            height: 100%;
+            margin: 0;
+}
+        body {
+            font-family: Helvetica;
+            background: linear-gradient(to bottom, #e5ffc3, #98ff54);
+            margin: 0;
+            padding: 0;
+        }
+
+        #chatbox {
+            width: 400px;
+            height: 500px;
+            margin: 50px auto;
+            border: 2px solid #ccc;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+        }
+
+        #chat-history {
+            padding: 20px;
+            overflow-y: auto;
+            flex-grow: 1;
+        }
+
+        #input-container {
+            display: flex;
+            align-items: center;
+            border-top: 2px solid #ccc;
+        }
+
+        textarea {
+            width: 80%;
+            height: 40px;
+            padding: 10px;
+            border: none;
+            border-radius: 10px 0 0 10px;
+            resize: none;
+            box-sizing: border-box;
+        }
+
+        button {
+            width: 20%;
+            height: 40px;
+            border: none;
+            background-color: #007BFF;
+            color: #fff;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 0 0 10px 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        p {
+            margin: 10px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 style="text-align:center; color:#333;">Joshua's Chatbot</h1>
+    <div id="chatbox">
+        <div id="chat-history"></div>
+        <div id="input-container">
+            <textarea id="user-input" placeholder="Type your message..." onkeydown="handleKey(event)"></textarea>
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <script>
+        function handleKey(event) {
+            if (event.keyCode === 13 && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            var userInput = document.getElementById("user-input").value;
+            var chatHistory = document.getElementById("chat-history");
+            chatHistory.innerHTML += "<p class='user'>You: " + userInput + "</p>";
+
+            fetch('/ask', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'user_input=' + encodeURIComponent(userInput)
+            })
+            .then(response => response.json())
+            .then(data => {
+                chatHistory.innerHTML += "<p class='bot'>Bot: " + data.response + "</p>";
+                document.getElementById("user-input").value = "";
+                chatHistory.scrollTop = chatHistory.scrollHeight; // Auto-scroll to the latest message
+            });
+        }
+    </script>
+</body>
+</html>
+
+
+
+
